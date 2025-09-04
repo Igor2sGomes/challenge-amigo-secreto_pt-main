@@ -1,0 +1,167 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing:border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #FF4C4C;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.main-content {
+    background-color: #4CAF50;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.header-banner img {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.section-title {
+    margin: 10px 0 10px;
+    font-weight: 700;
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-name {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+}
+
+.button-add, .button-draw, .button-reset {
+    background-color:#FF4C4C;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.button-add:hover, .button-draw:hover, .button-reset:hover {
+    background-color: #3a54d6;
+}
+
+.button-draw img {
+    vertical-align: middle;
+    margin-right: 6px;
+    width: 20px;
+    height: 20px;
+}
+
+.name-list {
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.name-list li {
+    background-color: #F1F1F1;
+    margin-bottom: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-align: left;
+}
+
+.result-text {
+    margin-top: 15px;
+    font-weight: 700;
+    color: #4B69FD;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+/* --- Estilos natalinos --- */
+.carta {
+    background-color: #FF4C4C; /* vermelho natalino */
+    border: 2px solid #4CAF50; /* verde */
+    border-radius: 12px;
+    width: 140px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Merriweather', serif;
+    transform: translateY(-200px);
+    opacity: 0;
+    animation: cair 0.5s forwards;
+    position: relative;
+}
+
+.carta::before {
+    content: "🎁";
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+@keyframes cair {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cartas-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+#neve-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10px;
+    color: #fff;
+    font-size: 1em;
+    user-select: none;
+    pointer-events: none;
+    animation-name: cairNeve;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes cairNeve {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0.7; }
+}

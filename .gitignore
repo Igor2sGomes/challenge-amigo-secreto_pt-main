@@ -1,0 +1,15 @@
+    # Ignorar pasta com imagens
+    assets/
+
+    # Ignorar arquivos do VS Code
+    .vscode/
+
+    # Ignorar arquivos de exemplo do curso
+    *.js
+    *.css
+
+    # Não ignorar arquivos do projeto principal
+    !app.js
+    !style.css
+    !index.html
+    
