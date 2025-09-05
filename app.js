@@ -1,91 +1,116 @@
-let listaAmigos = [];//variável da array/lista
+class Sorteio {
+    constructor() {
+        this.listaAmigos = [];
+        this.input = document.getElementById('amigo');
+        this.ul = document.getElementById('listaAmigos');
+        this.cartasContainer = document.getElementById('cartas-container');
+        this.reiniciarButton = document.getElementById('button-reiniciar');
+        this.notificacao = document.getElementById('notificacao');
 
-// Adiciona amigo
-function adicionarAmigo() {
-    const input = document.getElementById('amigo');
-    let nome = input.value.trim();
-    if(!nome) { 
-        alert("Digite um nome válido!"); 
-        return; 
+        document.getElementById('button-add').addEventListener('click', () => this.adicionarAmigo());
+        document.getElementById('button-draw').addEventListener('click', () => this.sortearAmigo());
+        document.getElementById('button-reiniciar').addEventListener('click', () => this.reiniciar());
     }
+
+    adicionarAmigo() {
+        let nome = this.input.value.trim();
+        if (!nome) {
+            this.mostrarNotificacao("Digite um nome válido!", 'erro');
+            return;
+        }
         nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-        if(listaAmigos.includes(nome)) {
-             alert("Este nome já foi adicionado!"); 
-             return; 
+        if (this.listaAmigos.includes(nome)) {
+            this.mostrarNotificacao("Este nome já foi adicionado!", 'erro');
+            return;
+        }
+
+        this.listaAmigos.push(nome);
+        this.atualizarLista();
+        this.input.value = '';
+        this.input.focus();
+        this.mostrarNotificacao(`${nome} foi adicionado com sucesso!`, 'sucesso');
     }
 
-    listaAmigos.push(nome);
-    atualizarLista();
-    input.value = '';
-    input.focus();
-}
+    removerAmigo(nome) {
+        this.listaAmigos = this.listaAmigos.filter(amigo => amigo !== nome);
+        this.atualizarLista();
+        this.mostrarNotificacao(`${nome} foi removido da lista!`, 'info');
+    }
 
-// Atualiza lista
-function atualizarLista() {
-    const ul = document.getElementById('listaAmigos');
-    ul.innerHTML = '';
-    listaAmigos.forEach(nome => {
-        const li = document.createElement('li');
-        li.textContent = nome;
-        ul.appendChild(li);
-    });
-}
+    atualizarLista() {
+        this.ul.innerHTML = '';
+        this.listaAmigos.forEach(nome => {
+            const li = document.createElement('li');
+            li.textContent = nome;
 
-// Gera sorteio sem repetir
-function gerarSorteio(lista) {
-    let sorteio = [];
-    let tentativa = 0;
-    const maxTentativas = 100;
-    while(tentativa < maxTentativas) {
-        let copia = [...lista];
-        sorteio = lista.map(amigo => {
-            let possiveis = copia.filter(x => x !== amigo);
-            if(possiveis.length === 0) return null;
-            let escolhido = possiveis[Math.floor(Math.random() * possiveis.length)];
-            copia = copia.filter(x => x !== escolhido);
-            return {amigo, escolhido};
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.classList.add('button-remove');
+            removeButton.onclick = () => this.removerAmigo(nome);
+
+            li.appendChild(removeButton);
+            this.ul.appendChild(li);
         });
-        if(!sorteio.includes(null)) break;
-        tentativa++;
     }
-    if(tentativa === maxTentativas) {
-        alert("Não foi possível gerar o sorteio. Tente novamente.");
-        return [];
+
+    gerarSorteio() {
+        const amigosEmbaralhados = [...this.listaAmigos].sort(() => Math.random() - 0.5);
+        const sorteio = new Map();
+        for (let i = 0; i < amigosEmbaralhados.length; i++) {
+            let amigo = amigosEmbaralhados[i];
+            let amigoSecreto = amigosEmbaralhados[(i + 1) % amigosEmbaralhados.length];
+            sorteio.set(amigo, amigoSecreto);
+        }
+        return sorteio;
     }
-    return sorteio;
-}
 
-// Sortear amigos
-function sortearAmigo() {
-    if(listaAmigos.length < 2) { alert("Adicione pelo menos 2 participantes!"); return; }
+    sortearAmigo() {
+        if (this.listaAmigos.length < 2) {
+            this.mostrarNotificacao("Adicione pelo menos 2 participantes!", 'erro');
+            return;
+        }
 
-    const cartasContainer = document.getElementById('cartas-container');
-    cartasContainer.innerHTML = '';
+        this.cartasContainer.innerHTML = '';
+        const sorteio = this.gerarSorteio();
 
-    const sorteio = gerarSorteio(listaAmigos);
-    if(sorteio.length === 0) return;
-
-    sorteio.forEach((par, index) => {
-        setTimeout(() => {
+        sorteio.forEach((escolhido, amigo) => {
             const carta = document.createElement('div');
             carta.classList.add('carta');
-            carta.textContent = `${par.amigo} → ${par.escolhido}`;
-            cartasContainer.appendChild(carta);
-        }, index * 400);
-    });
+            carta.innerHTML = `
+                <div class="carta-frente">
+                    ${amigo}
+                </div>
+                <div class="carta-tras">
+                    ${escolhido}
+                </div>
+            `;
+            carta.addEventListener('click', () => {
+                carta.classList.toggle('virada');
+            });
+            this.cartasContainer.appendChild(carta);
+        });
 
-    document.getElementById('button-reiniciar').disabled = false;
+        this.reiniciarButton.disabled = false;
+    }
+
+    reiniciar() {
+        this.listaAmigos = [];
+        this.atualizarLista();
+        this.cartasContainer.innerHTML = '';
+        this.reiniciarButton.disabled = true;
+        this.mostrarNotificacao('Sorteio reiniciado!', 'info');
+    }
+
+    mostrarNotificacao(mensagem, tipo) {
+        this.notificacao.textContent = mensagem;
+        this.notificacao.className = `notificacao ${tipo}`;
+        setTimeout(() => {
+            this.notificacao.textContent = '';
+            this.notificacao.className = 'notificacao';
+        }, 3000);
+    }
 }
 
-// Reiniciar
-function reiniciar() {
-    listaAmigos = [];
-    atualizarLista();
-    document.getElementById('cartas-container').innerHTML = '';
-    document.getElementById('button-reiniciar').disabled = true;
-}
-
-// Neve
 function criarNeve() {
     const neveContainer = document.getElementById('neve-container');
     setInterval(() => {
@@ -100,4 +125,7 @@ function criarNeve() {
     }, 300);
 }
 
-window.onload = criarNeve;
+window.onload = () => {
+    new Sorteio();
+    criarNeve();
+};

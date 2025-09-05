@@ -15,20 +15,21 @@
         
         <section class="input-section">
             <h2 class="section-title">Quem vai participar?</h2>
+            <div id="notificacao" class="notificacao" aria-live="polite"></div>
             <div class="input-wrapper">
                 <label for="amigo" class="input-label">participantes:</label>
                 <input type="text" id="amigo" class="input-name" placeholder="Digite um nome">
-                <button type="button" class="button-add" onclick="adicionarAmigo()">Adicionar</button>
+                <button type="button" id="button-add" class="button-add">Adicionar</button>
             </div>
            
             <ul id="listaAmigos" class="name-list" aria-label="Lista de amigos"></ul>
 
             <div class="button-container">
-                <button class="button-draw" onclick="sortearAmigo()" aria-label="Sortear amigo secreto">
+                <button id="button-draw" class="button-draw" aria-label="Sortear amigo secreto">
                     Sortear amigo
                 </button>
 
-                <button id="button-reiniciar" class="button-reset" onclick="reiniciar()" disabled>
+                <button id="button-reiniciar" class="button-reset" disabled>
                     Reiniciar sorteio 
                 </button>
             </div>
